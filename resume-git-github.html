@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Git &amp; GitHub — Résumé</title>
+<style>
+  :root{
+    --bg: #0d1117;
+    --bg-panel: #131a22;
+    --line: #22303c;
+    --text: #e6edf3;
+    --muted: #7d8b98;
+    --green: #3fb950;
+    --green-dim: #2a5f38;
+    --orange: #f0883e;
+    --mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: -apple-system, 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+  }
+  a{color:var(--green);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:64px 24px 40px;
+    max-width:900px;
+    margin:0 auto;
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--green);
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow::before{content:"●"; color:var(--green); font-size:10px;}
+  h1{
+    font-family:var(--mono);
+    font-size:clamp(28px,5vw,44px);
+    line-height:1.15;
+    margin:0 0 14px;
+    letter-spacing:-0.02em;
+  }
+  h1 .accent{color:var(--green);}
+  .sub{
+    color:var(--muted);
+    font-size:16px;
+    max-width:60ch;
+  }
+
+  /* signature: mini git graph */
+  .graph{
+    margin-top:36px;
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--muted);
+    overflow-x:auto;
+  }
+  .graph svg{display:block;}
+
+  /* ---------- CONTENT ---------- */
+  main{max-width:900px; margin:0 auto; padding:8px 24px 80px;}
+
+  section{padding:38px 0; border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+
+  .num{
+    font-family:var(--mono);
+    color:var(--green);
+    font-size:13px;
+    letter-spacing:.08em;
+  }
+  h2{
+    font-family:var(--mono);
+    font-size:21px;
+    margin:6px 0 16px;
+    font-weight:600;
+  }
+  p{color:#cfd8e0; margin:0 0 14px; max-width:70ch;}
+  ul{margin:0 0 14px; padding-left:20px; color:#cfd8e0;}
+  li{margin-bottom:8px; max-width:66ch;}
+
+  code, .inline-code{
+    font-family:var(--mono);
+    background:#1a2530;
+    color:var(--green);
+    padding:2px 6px;
+    border-radius:4px;
+    font-size:0.9em;
+  }
+
+  .term{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:14px 16px;
+    font-family:var(--mono);
+    font-size:13.5px;
+    margin:14px 0;
+    overflow-x:auto;
+  }
+  .term .prompt{color:var(--muted);}
+  .term .cmd{color:var(--text);}
+  .term .comment{color:var(--muted); font-style:italic;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+    margin-top:8px;
+  }
+  th,td{
+    text-align:left;
+    padding:10px 12px;
+    border-bottom:1px solid var(--line);
+  }
+  th{
+    font-family:var(--mono);
+    color:var(--green);
+    font-weight:600;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
+  td code{background:none; padding:0; color:var(--orange);}
+
+  .note{
+    margin-top:40px;
+    padding:16px 18px;
+    border-left:3px solid var(--orange);
+    background:rgba(240,136,62,0.08);
+    color:var(--muted);
+    font-size:13.5px;
+    border-radius:0 6px 6px 0;
+  }
+
+  footer{
+    text-align:center;
+    color:var(--muted);
+    font-family:var(--mono);
+    font-size:12px;
+    padding:30px 24px 60px;
+  }
+
+  @media (max-width:600px){
+    .hero{padding:44px 18px 28px;}
+    main{padding:8px 18px 60px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="eyebrow">git log --summary</div>
+  <h1>Git <span class="accent">&amp;</span> GitHub</h1>
+  <p class="sub">Les fondamentaux du contrôle de version : du premier <code class="inline-code">commit</code> local jusqu'à la pull request en équipe.</p>
+
+  <div class="graph">
+    <svg viewBox="0 0 560 90" width="100%" height="90" preserveAspectRatio="xMinYMid meet">
+      <!-- main line -->
+      <line x1="20" y1="45" x2="540" y2="45" stroke="#3fb950" stroke-width="2"/>
+      <!-- feature branch -->
+      <path d="M 180 45 C 220 15, 300 15, 340 45" stroke="#f0883e" stroke-width="2" fill="none"/>
+      <!-- commits main -->
+      <circle cx="40" cy="45" r="5" fill="#3fb950"/>
+      <circle cx="180" cy="45" r="5" fill="#3fb950"/>
+      <circle cx="340" cy="45" r="5" fill="#3fb950"/>
+      <circle cx="460" cy="45" r="5" fill="#3fb950"/>
+      <!-- commits branch -->
+      <circle cx="260" cy="16" r="5" fill="#f0883e"/>
+      <text x="40" y="70" fill="#7d8b98" font-size="11">init</text>
+      <text x="170" y="70" fill="#7d8b98" font-size="11">checkout -b</text>
+      <text x="245" y="8" fill="#7d8b98" font-size="11">feature</text>
+      <text x="330" y="70" fill="#7d8b98" font-size="11">merge</text>
+      <text x="440" y="70" fill="#7d8b98" font-size="11">push</text>
+    </svg>
+  </div>
+</div>
+
+<main>
+
+  <section>
+    <div class="num">01</div>
+    <h2>Git vs GitHub</h2>
+    <p><strong>Git</strong> est le logiciel de contrôle de version, installé en local, qui suit l'historique de tes fichiers. <strong>GitHub</strong> est une plateforme en ligne qui héberge des dépôts Git et ajoute la collaboration (pull requests, issues). Git fonctionne sans GitHub — l'inverse n'est pas vrai.</p>
+  </section>
+
+  <section>
+    <div class="num">02</div>
+    <h2>Architecture : local vs distant</h2>
+    <ul>
+      <li><strong>Working directory</strong> — tes fichiers tels que tu les modifies.</li>
+      <li><strong>Staging area</strong> — les changements sélectionnés pour le prochain commit.</li>
+      <li><strong>Dépôt local (.git)</strong> — l'historique enregistré sur ta machine.</li>
+      <li><strong>Les branches</strong> — pour teste des nouvelles fonctionnalites.</li>
+      <li><strong>Dépôt distant (remote / GitHub)</strong> — la copie partagée en ligne.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="num">03</div>
+    <h2>Configuration &amp; initialisation</h2>
+    <div class="term">
+<span class="prompt">$</span> <span class="cmd">git config --global user.name "Ton Nom"</span><br>
+<span class="prompt">$</span> <span class="cmd">git config --global user.email "ton@email.com"</span><br>
+<span class="prompt">$</span> <span class="cmd">git init</span>            <span class="comment"># initialise un dépôt local</span><br>
+<span class="prompt">$</span> <span class="cmd">git clone &lt;url&gt;</span>    <span class="comment"># copie un dépôt distant</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="num">04</div>
+    <h2>Le cycle status → add → commit</h2>
+    <div class="term">
+<span class="prompt">$</span> <span class="cmd">git status</span><br>
+<span class="prompt">$</span> <span class="cmd">git add fichier.txt</span>   <span class="comment"># un fichier précis</span><br>
+<span class="prompt">$</span> <span class="cmd">git add .</span>              <span class="comment"># dossier courant</span><br>
+<span class="prompt">$</span> <span class="cmd">git add -A</span>             <span class="comment"># tout le dépôt</span><br>
+<span class="prompt">$</span> <span class="cmd">git reset fichier.txt</span> <span class="comment"># retirer du staging</span><br>
+<span class="prompt">$</span> <span class="cmd">git commit -m "message"</span>
+    </div>
+    <p>Pour annuler le dernier commit : <code class="inline-code">git reset HEAD~1</code> (les changements reviennent en staging ou en working dir selon <code class="inline-code">--soft</code> / <code class="inline-code">--mixed</code> / <code class="inline-code">--hard</code>).</p>
+  </section>
+
+  <section>
+    <div class="num">05</div>
+    <h2>Supprimer / arrêter de suivre</h2>
+    <ul>
+      <li><code class="inline-code">git rm fichier</code> — supprime du disque et du suivi.</li>
+      <li><code class="inline-code">git rm --cached fichier</code> — arrête le suivi mais garde le fichier (utile avec <code class="inline-code">.gitignore</code>).</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="num">06</div>
+    <h2>Historique</h2>
+    <ul>
+      <li><code class="inline-code">git log</code> — historique des commits (auteur, date, hash, message).</li>
+      <li><code class="inline-code">git diff</code> — différences entre commits, staging, working dir.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="num">07</div>
+    <h2>Branches</h2>
+    <p>Une branche est une ligne de développement indépendante (<code class="inline-code">main</code> est souvent la branche principale).</p>
+    <div class="term">
+<span class="prompt">$</span> <span class="cmd">git branch nouvelle-fonctionnalite</span><br>
+<span class="prompt">$</span> <span class="cmd">git checkout nouvelle-fonctionnalite</span><br>
+<span class="prompt">$</span> <span class="cmd">git checkout -b nouvelle-fonctionnalite</span>  <span class="comment"># créer + basculer</span><br>
+<span class="prompt">$</span> <span class="cmd">git branch --show-current</span><br>
+<span class="prompt">$</span> <span class="cmd">git branch -l</span>  <span class="comment"># voir la liste des branches</span><br>
+
+<span class="prompt">$</span> <span class="cmd">git merge nouvelle-fonctionnalite</span>
+
+<span class="prompt">$</span> <span class="cmd">git log --oneline</span>  <span class="comment"># voir tous l'historique des commits avec leurs id's</span><br>
+<span class="prompt">$</span> <span class="cmd">git checkout id-commit</span>  <span class="comment">creer une branche tomporaire pour qu'on puisse retourner a cette commit</span><br>
+
+
+    </div>
+    <p><strong>Conflits de fusion</strong> : Git ne peut pas toujours fusionner automatiquement deux modifications sur les mêmes lignes. Il faut éditer manuellement les marqueurs de conflit dans les fichiers concernés, puis <code class="inline-code">add</code> + <code class="inline-code">commit</code>.</p>
+  </section>
+
+  <section>
+    <div class="num">08</div>
+    <h2>Le dépôt distant</h2>
+    <table>
+      <tr><th>Commande</th><th>Effet</th></tr>
+      <tr><td><code>git push</code></td><td>Envoie tes commits locaux vers le distant</td></tr>
+      <tr><td><code>git push origin branch</code></td><td>Envoie tes commits d'une branche</td></tr>
+
+      <tr><td><code>git fetch</code></td><td>Récupère les changements distants sans les fusionner</td></tr>
+      <tr><td><code>git pull</code></td><td>Équivaut à fetch + merge</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <div class="num">09</div>
+    <h2>Annuler &amp; mettre de côté</h2>
+    <ul>
+      <li><code class="inline-code">git restore fichier</code> — annule les modifications locales non commitées.</li>
+      <li><code class="inline-code">git stash</code> / <code class="inline-code">git stash pop</code> — met de côté un travail non fini, puis le récupère.</li>
+      <li><code class="inline-code">git revert &lt;commit&gt;</code> — annule un commit en créant un nouveau commit inverse (sûr sur historique partagé).</li>
+      <li><code class="inline-code">git rebase</code> — réécrit l'historique pour le linéariser (à éviter sur des branches déjà partagées).</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="num">10</div>
+    <h2>Pull Requests &amp; collaboration</h2>
+    <p>Une <strong>Pull Request (PR)</strong> propose de fusionner une branche dans une autre (souvent une feature branch → <code class="inline-code">main</code>), avec revue de code et vérifications automatiques avant fusion.</p>
+    <p style="color:var(--muted); font-size:14px;">Workflow typique : branche → commits → push → PR → review → merge.</p>
+  </section>
+
+  <div class="note">
+    Note : la transcription de la vidéo source n'était pas accessible (protection YouTube). Ce résumé est construit à partir des chapitres officiels de la vidéo et des connaissances standards sur Git/GitHub.
+  </div>
+
+</main>
+
+<footer>~/git-github-resume · fin</footer>
+
+</body>
+</html>
