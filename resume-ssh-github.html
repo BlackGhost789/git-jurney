@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Résumé : Authentification SSH avec GitHub</title>
+<style>
+  body {
+    font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 0 20px;
+    background: #0d1117;
+    color: #c9d1d9;
+    line-height: 1.6;
+  }
+  h1 { color: #58a6ff; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
+  h2 { color: #79c0ff; margin-top: 30px; }
+  code, pre {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: monospace;
+    color: #a5d6ff;
+  }
+  pre { padding: 12px; overflow-x: auto; }
+  .step {
+    background: #161b22;
+    border-left: 3px solid #58a6ff;
+    padding: 12px 16px;
+    margin: 12px 0;
+    border-radius: 4px;
+  }
+  .tag {
+    display: inline-block;
+    background: #238636;
+    color: white;
+    font-size: 0.75em;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-bottom: 6px;
+  }
+</style>
+</head>
+<body>
+
+<h1>🔑 Authentification SSH avec GitHub</h1>
+
+<h2>📖 Définition et but</h2>
+<p>
+  L'authentification SSH est une méthode qui utilise une <strong>paire de clés cryptographiques</strong>
+  (une privée gardée sur ta machine, une publique donnée à GitHub) pour prouver ton identité,
+  au lieu d'utiliser un identifiant et un mot de passe classiques.
+  
+  </p>
+  
+  <p> Le client genere une paire de cle (privee et publique), le client garde son cle publique chez lui, dans l'etape d'etablissement de connexion le serveur va proceder a 
+  l'authentification, d'abord il va chiffrer un string challenge avec la cle pub du client et l'envoyer chez lui , if he pu de la dechiffrer il va la lui transmettre => challenge 
+  accepte et la connextion etablie.
+</p>
+<p>
+  <strong>Le but principal :</strong> remplacer l'authentification par mot de passe (que GitHub
+  n'accepte d'ailleurs plus pour <code>git push</code>/<code>git pull</code> en HTTPS) par une méthode
+  plus sûre et plus pratique. Une fois la clé configurée :
+</p>
+<ul>
+  <li>Plus besoin de taper ton mot de passe (ou un token) à chaque <code>push</code>/<code>pull</code></li>
+  <li>La clé privée ne quitte jamais ta machine — seule la clé publique est partagée</li>
+  <li>Beaucoup plus difficile à intercepter ou à deviner qu'un mot de passe</li>
+  <li>Tu peux révoquer une clé sur GitHub sans changer ton mot de passe de compte</li>
+</ul>
+
+<div class="step">
+  <span class="tag">1</span>
+  <strong>Générer une clé SSH</strong>
+  <pre>ssh-keygen -t rsa -b 4096 -C "comment"</pre>
+  <p>Crée une paire de clés : une privée (secrète) et une publique (<code>.pub</code>).</p>
+</div>
+
+<div class="step">
+  <span class="tag">2</span>
+  <strong>Démarrer l'agent SSH</strong>
+  <pre>eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519</pre>
+  <p>L'agent garde ta clé en mémoire pour éviter de retaper la passphrase à chaque fois.</p>
+</div>
+
+<div class="step">
+  <span class="tag">3</span>
+  <strong>Ajouter la clé publique sur GitHub</strong>
+  <pre>cat ~/.ssh/id_ed25519.pub</pre>
+  <p>Copier le résultat → GitHub → Settings → SSH and GPG keys → New SSH key.</p>
+</div>
+
+<div class="step">
+  <span class="tag">4</span>
+  <strong>Tester la connexion</strong>
+  <pre>ssh -T git@github.com</pre>
+  <p>Réponse attendue : <code>Hi username! You've successfully authenticated...</code></p>
+</div>
+
+<div class="step">
+  <span class="tag">5</span>
+  <strong>Utiliser une URL SSH pour le remote</strong>
+  <pre>git remote set-url origin git@github.com:user/repo.git</pre>
+  <p>Sans ça, Git continue d'utiliser HTTPS et redemande identifiant/mot de passe.</p>
+</div>
+
+<h2>💡 À retenir</h2>
+<ul>
+  <li><code>ssh -T git@github.com</code> teste seulement l'authentification, pas le remote d'un repo précis.</li>
+  <li><code>git remote -v</code> permet de vérifier si le remote est en HTTPS ou en SSH.</li>
+  <li>Une fois configuré, plus besoin de mot de passe pour <code>git push</code> / <code>git pull</code>.</li>
+</ul>
+
+</body>
+</html>
